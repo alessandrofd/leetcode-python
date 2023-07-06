@@ -24,7 +24,28 @@ from typing import List
 
 class Solution:
     def summaryRanges(self, nums: List[int]) -> List[str]:
+        n = len(nums)
         result = []
+
+        if not nums:
+            return result
+
+        start = 0
+        for i in range(1, n):
+            if nums[i] == nums[i - 1] + 1:
+                continue
+
+            if start == i - 1:
+                result.append(str(nums[i - 1]))
+            else:
+                result.append(f"{nums[start]}->{nums[i - 1]}")
+
+            start = i
+
+        if start == n - 1:
+            result.append(str(nums[n - 1]))
+        else:
+            result.append(f"{nums[start]}->{nums[n - 1]}")
 
         return result
 
