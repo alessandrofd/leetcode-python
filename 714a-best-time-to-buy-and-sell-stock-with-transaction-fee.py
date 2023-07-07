@@ -19,7 +19,16 @@ from typing import List
 
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
-        return 0
+        n = len(prices)
+        sold = 0
+        bought = -prices[0]
+
+        for i in range(1, n):
+            temp = max(sold, bought + prices[i] - fee)
+            bought = max(bought, sold - prices[i])
+            sold = temp
+
+        return sold
 
 
 def test_solution():
