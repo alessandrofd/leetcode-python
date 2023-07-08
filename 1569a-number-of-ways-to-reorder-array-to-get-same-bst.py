@@ -25,7 +25,21 @@ from math import comb
 
 class Solution:
     def numOfWays(self, nums: List[int]) -> int:
-        return 0
+        MOD = 1_000_000_007
+
+        def ways(nums):
+            n = len(nums)
+
+            if n < 3:
+                return 1
+
+            root = nums[0]
+            left = [n for n in nums[1:] if n < root]
+            right = [n for n in nums[1:] if n > root]
+
+            return comb(n - 1, len(left)) * ways(left) * ways(right)
+
+        return (ways(nums) - 1) % MOD
 
 
 def test_solution():
