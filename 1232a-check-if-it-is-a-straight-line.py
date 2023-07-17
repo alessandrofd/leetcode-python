@@ -21,6 +21,19 @@ from typing import List
 
 class Solution:
     def checkStraightLine(self, coordinates: List[List[int]]) -> bool:
+        n = len(coordinates)
+
+        if n == 2:
+            return True
+
+        x0, y0 = coordinates[0]
+        x1, y1 = coordinates[1]
+        delta_x, delta_y = x1 - x0, y1 - y0
+
+        for xi, yi in coordinates[2:]:
+            if delta_x * (yi - y0) != delta_y * (xi - x0):
+                return False
+
         return True
 
 
