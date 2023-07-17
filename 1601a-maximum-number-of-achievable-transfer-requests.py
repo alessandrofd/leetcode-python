@@ -28,7 +28,35 @@ from typing import List
 
 class Solution:
     def maximumRequests(self, num_buildings: int, requests: List[List[int]]) -> int:
-        return 0
+        num_requests = len(requests)
+        balances = [0] * num_buildings
+        max_requests = 0
+
+        def backtrack(request, accepted_requests):
+            nonlocal max_requests
+
+            if request == num_requests:
+                if all(b == 0 for b in balances):
+                    max_requests = max(max_requests, accepted_requests)
+
+                return
+
+            # deny request
+            backtrack(request + 1, accepted_requests)
+
+            # accept request
+            from_building, to_building = requests[request]
+
+            balances[from_building] -= 1
+            balances[to_building] += 1
+
+            backtrack(request + 1, accepted_requests + 1)
+
+            balances[from_building] += 1
+            balances[to_building] -= 1
+
+        backtrack(0, 0)
+        return max_requests
 
 
 def test_solution():
