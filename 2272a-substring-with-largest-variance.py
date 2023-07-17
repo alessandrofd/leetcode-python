@@ -32,13 +32,71 @@ from itertools import permutations
 
 class Solution:
     def largestVariance(self, string: str) -> int:
-        return 0
+        codes = [ord(letter) - 97 for letter in string]
+        freqs = Counter(codes)
+
+        max_variance = 0
+
+        for i, j in permutations(freqs.keys(), 2):
+            count_i = 0
+            count_j = 0
+            rest_j = freqs[j]
+
+            for code in codes:
+                if code == i:
+                    count_i += 1
+
+                if code == j:
+                    count_j += 1
+                    rest_j -= 1
+
+                variance = count_i - count_j
+
+                if count_j > 0:
+                    max_variance = max(max_variance, variance)
+
+                if variance < 0 and rest_j > 0:
+                    count_i = 0
+                    count_j = 0
+
+        return max_variance
 
     # Podemos otimizar a solução filtrando apenas as ocorrências das letras da dupla
     # que estamos analizando.
 
     def largestVariance_filtered(self, string: str) -> int:
-        return 0
+        codes = [ord(letter) - 97 for letter in string]
+        freqs = Counter(codes)
+
+        idxs = defaultdict(list)
+        for i, code in enumerate(codes):
+            idxs[code].append((i, code))
+
+        max_variance = 0
+
+        for i, j in permutations(freqs.keys(), 2):
+            count_i = 0
+            count_j = 0
+            rest_j = freqs[j]
+
+            for _, code in sorted(idxs[i] + idxs[j]):
+                if code == i:
+                    count_i += 1
+
+                if code == j:
+                    count_j += 1
+                    rest_j -= 1
+
+                variance = count_i - count_j
+
+                if count_j > 0:
+                    max_variance = max(max_variance, variance)
+
+                if variance < 0 and rest_j > 0:
+                    count_i = 0
+                    count_j = 0
+
+        return max_variance
 
 
 def test_solution():
