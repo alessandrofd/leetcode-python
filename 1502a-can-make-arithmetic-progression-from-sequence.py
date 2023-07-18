@@ -17,10 +17,17 @@ from itertools import pairwise
 
 class Solution:
     def canMakeArithmeticProgression(self, arr: List[int]) -> bool:
-        return False
+        n = len(arr)
+        arr.sort()
+        diff = arr[1] - arr[0]
+        for i in range(2, n):
+            if arr[i] - arr[i - 1] != diff:
+                return False
+        return True
 
     def canMakeArithmeticProgression_pairwise(self, arr: List[int]) -> bool:
-        return False
+        (x, y), *rest = pairwise(sorted(arr))
+        return all(b - a == y - x for a, b in rest)
 
 
 def test_solution():
