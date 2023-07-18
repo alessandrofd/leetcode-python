@@ -42,7 +42,32 @@ class Solution:
         return 0
 
     def totalCost_one_queue(self, costs: List[int], k: int, candidates: int) -> int:
-        return 0
+        n = len(costs)
+
+        heap = []
+
+        left = candidates
+        for cost in costs[:candidates]:
+            heappush(heap, (cost, 0))
+
+        right = max(candidates, n - candidates) - 1
+        for cost in costs[right + 1 :]:
+            heappush(heap, (cost, 1))
+
+        total_cost = 0
+        while k:
+            cost, side = heappop(heap)
+            total_cost += cost
+            k -= 1
+            if left <= right:
+                if side == 0:
+                    heappush(heap, (costs[left], 0))
+                    left += 1
+                else:
+                    heappush(heap, (costs[right], 1))
+                    right -= 1
+
+        return total_cost
 
 
 def test_solution():
@@ -50,7 +75,7 @@ def test_solution():
 
     funcs = [
         Solution().totalCost_one_queue,
-        Solution().totalCost_two_queues,
+        # Solution().totalCost_two_queues,
     ]
 
     # fmt: off
