@@ -25,4 +25,19 @@ class TreeNode:
 
 class Solution:
     def minDepth(self, root: Optional[TreeNode]) -> int:
-        return 0
+        if not root:
+            return 0
+
+        queue = deque([root])
+        depth = 0
+        while queue:
+            depth += 1
+            n = len(queue)
+            for _ in range(n):
+                node = queue.popleft()
+                if not (node.left or node.right):
+                    return depth
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
