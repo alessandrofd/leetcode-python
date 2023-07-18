@@ -15,7 +15,24 @@ Constraints:
 
 class Solution:
     def buddyStrings(self, s: str, goal: str) -> bool:
-        return False
+        if len(s) == 1:
+            return False
+        if len(s) != len(goal):
+            return False
+
+        if s == goal:
+            if len(set(s)) == len(s):
+                return False
+            return True
+
+        diffs = []
+        for a, b in zip(s, goal):
+            if a != b:
+                if len(diffs) == 2:
+                    return False
+                diffs.append((a, b))
+
+        return len(diffs) == 2 and diffs[0] == diffs[1][::-1]
 
 
 def test_solution():
