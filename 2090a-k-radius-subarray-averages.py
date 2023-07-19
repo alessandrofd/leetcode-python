@@ -27,7 +27,21 @@ from itertools import accumulate
 
 class Solution:
     def getAverages(self, nums: List[int], k: int) -> List[int]:
-        return [0]
+        if k == 0:
+            return nums
+
+        n = len(nums)
+        result = [-1] * n
+
+        if n < 2 * k + 1:
+            return result
+
+        prefix_sum = [0, *accumulate(nums)]
+
+        for i in range(k, n - k):
+            result[i] = (prefix_sum[i + k + 1] - prefix_sum[i - k]) // (2 * k + 1)
+
+        return result
 
 
 def test_solution():
