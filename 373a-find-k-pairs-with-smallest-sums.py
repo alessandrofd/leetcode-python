@@ -53,7 +53,22 @@ class Solution:
     def kSmallestPairs(
         self, nums1: List[int], nums2: List[int], k: int
     ) -> List[List[int]]:
-        return [[0]]
+        n1 = len(nums1)
+        n2 = len(nums2)
+
+        heap = [(nums1[0] + nums2[0], 0, 0)]
+        result = []
+        while len(result) < k and len(heap) > 0:
+            _, idx1, idx2 = heappop(heap)
+            result.append([nums1[idx1], nums2[idx2]])
+
+            if idx1 + 1 < n1 and idx2 == 0:
+                heappush(heap, (nums1[idx1 + 1] + nums2[idx2], idx1 + 1, idx2))
+
+            if idx2 + 1 < n2:
+                heappush(heap, (nums1[idx1] + nums2[idx2 + 1], idx1, idx2 + 1))
+
+        return result
 
 
 def test_solution():
@@ -73,4 +88,4 @@ def test_solution():
     # fmt: on
     for nums1, nums2, k, expected in data:
         for func in funcs:
-            assert func(nums1, nums2, k) == expected
+            assert sorted(func(nums1, nums2, k)) == sorted(expected)
