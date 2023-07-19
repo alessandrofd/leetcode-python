@@ -27,4 +27,34 @@ class TreeNode:
 
 class Solution:
     def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
-        return []
+        graph = defaultdict(list)
+
+        def build_graph(node, parent):
+            if not node:
+                return
+
+            if node and parent:
+                graph[parent.val].append(node.val)
+                graph[node.val].append(parent.val)
+
+            build_graph(node.left, node)
+            build_graph(node.right, node)
+
+        build_graph(root, None)
+
+        queue = deque([target.val])
+        visited = set()
+
+        distance = 0
+        while distance < k:
+            n = len(queue)
+            for _ in range(n):
+                node = queue.popleft()
+                visited.add(node)
+                for neighbor in graph[node]:
+                    if neighbor in visited:
+                        continue
+                    queue.append(neighbor)
+            distance += 1
+
+        return list(queue)
