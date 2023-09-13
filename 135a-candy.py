@@ -125,9 +125,9 @@ def test_solution():
 
     # fmt: off
     funcs = [
-        # Solution().candy_brute_force,
-        # Solution().candy_two_arrays,
-        # Solution().candy_single_array,
+        Solution().candy_brute_force,
+        Solution().candy_two_arrays,
+        Solution().candy_single_array,
         Solution().candy_single_pass,
     ]
 
