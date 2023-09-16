@@ -22,15 +22,118 @@ Constraints:
     1 <= Node.val <= 100
 """
 
+from typing import List, Optional
 
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
+
+class TreeNode:
+    """Definition for a binary tree node."""
+
+    def __init__(self, val: int, left=None, right=None) -> None:
+        self.val = val
+        self.left = left
+        self.right = right
+
+    def __repr__(self) -> str:
+        return f"val: {self.val}, left: {self.left}, right: {self.right}"
+
+    def __str__(self) -> str:
+        return str(self.val)
+
+
+def to_binary_tree(nodes: List[int]) -> Optional[TreeNode]:
+    """Cria uma árvore binária a partir de uma lista de nós"""
+
+    if not nodes:
+        return None
+
+    root = TreeNode(nodes.pop(0))
+    queue = [root]
+
+    while nodes:
+        left_val = nodes.pop(0)
+        if nodes:
+            right_val = nodes.pop(0)
+        else:
+            right_val = None
+
+        node = queue.pop(0)
+        if left_val:
+            node.left = TreeNode(left_val)
+            queue.append(node.left)
+        if right_val:
+            node.right = TreeNode(right_val)
+            queue.append(node.right)
+
+    return root
+
+
+def to_list(root: Optional[TreeNode]) -> List[int]:
+    """Cria uma lista a partir de uma árvore binária"""
+    nodes = []
+    queue = [root]
+    while queue:
+        node = queue.pop(0)
+        nodes.append(node.val if node else None)
+
+        if not node:
+            continue
+
+        queue.append(node.left)
+        queue.append(node.right)
+
+    while not nodes[-1]:
+        nodes.pop()
+
+    return nodes
 
 
 class Solution:
-    def longestZigZag(self, root):
-        pass
+    """Solution"""
+
+    def longestZigZag(self, root: Optional[TreeNode]) -> int:
+        """1372. Longest zigzag path in a binary tree"""
+
+        longest_path = 0
+
+        def dfs(node, direction):
+            nonlocal longest_path
+
+            if not node:
+                return 0
+
+            left_path = dfs(node.left, "left")
+            right_path = dfs(node.right, "right")
+
+            longest_path = max(longest_path, left_path, right_path)
+
+            if direction == "left":
+                return right_path + 1
+            return left_path + 1
+
+        dfs(root, "")
+        return longest_path
+
+
+def test_solution():
+    """test"""
+
+    funcs = [
+        Solution().longestZigZag,
+    ]
+
+    # fmt: off
+    data = [
+        [[ 1, None, 1, 1, 1, None, None, 1, 1, None, 1, None, None, None, 1, None, 1, ], 3],
+        [[1, 1, 1, None, 1, None, None, 1, 1, None, 1], 4],
+        [[1], 0],
+    ]
+    # fmt: on
+
+    for nodes, expected in data:
+        for func in funcs:
+            root = to_binary_tree(nodes)
+            assert func(root) == expected
+
+
+if __name__ == "__main__":
+    pass
