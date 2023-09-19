@@ -38,22 +38,29 @@ class Solution:
     def kWeakestRows_pq(
         self, matrix: List[List[int]], num_weakest_rows: int
     ) -> List[int]:
+        """
+        Priority Queue/Heap com número máximo de itens na fila.
+        Ganho mínimo em relação à fila com todos os itens. Sort continua sendo
+        a solução mais performática.
+        """
         heap = []
 
         for i, row in enumerate(matrix):
-            heappush(heap, (sum(row), i))
+            heappush(heap, (-sum(row), -i))
+            if len(heap) > num_weakest_rows:
+                heappop(heap)
 
         result = []
-        for i in range(num_weakest_rows):
-            result.append(heappop(heap)[1])
-        return result
+        while heap:
+            result.append(-heappop(heap)[1])
+        return result[::-1]
 
 
 def test_solution():
     """test"""
 
     funcs = [
-        Solution().kWeakestRows_sort,
+        # Solution().kWeakestRows_sort,
         Solution().kWeakestRows_pq,
     ]
 
@@ -70,7 +77,6 @@ def test_solution():
             3,
             [2, 0, 3],
         ],
-
         [
             [
                 [1, 0, 0, 0],
@@ -81,7 +87,6 @@ def test_solution():
             2,
             [0, 2],
         ],
-
         [
             [
                 [1,1,1,0,0,0,0],
