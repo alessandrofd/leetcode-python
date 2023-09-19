@@ -23,31 +23,49 @@ Constraints:
 """
 
 from typing import List
+from heapq import heappush, heappop
 
 
 class Solution:
-    def kWeakestRows(self, matrix: List[List[int]], num_weakest_rows: int) -> List[int]:
+    def kWeakestRows_sort(
+        self, matrix: List[List[int]], num_weakest_rows: int
+    ) -> List[int]:
         weakest_rows = [(sum(row), i) for i, row in enumerate(matrix)]
         weakest_rows.sort()
+        print(weakest_rows)
         return [i for _, i in weakest_rows[0:num_weakest_rows]]
+
+    def kWeakestRows_pq(
+        self, matrix: List[List[int]], num_weakest_rows: int
+    ) -> List[int]:
+        heap = []
+
+        for i, row in enumerate(matrix):
+            heappush(heap, (sum(row), i))
+
+        result = []
+        for i in range(num_weakest_rows):
+            result.append(heappop(heap)[1])
+        return result
 
 
 def test_solution():
     """test"""
 
     funcs = [
-        Solution().kWeakestRows,
+        Solution().kWeakestRows_sort,
+        Solution().kWeakestRows_pq,
     ]
 
     # fmt: off
     data = [
         [
             [
-            [1, 1, 0, 0, 0],
-            [1, 1, 1, 1, 0],
-            [1, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0],
-            [1, 1, 1, 1, 1],
+                [1, 1, 0, 0, 0],
+                [1, 1, 1, 1, 0],
+                [1, 0, 0, 0, 0],
+                [1, 1, 0, 0, 0],
+                [1, 1, 1, 1, 1],
             ],
             3,
             [2, 0, 3],
@@ -55,14 +73,26 @@ def test_solution():
 
         [
             [
-            [1, 0, 0, 0],
-            [1, 1, 1, 1],
-            [1, 0, 0, 0],
-            [1, 0, 0, 0],
+                [1, 0, 0, 0],
+                [1, 1, 1, 1],
+                [1, 0, 0, 0],
+                [1, 0, 0, 0],
             ],
             2,
             [0, 2],
         ],
+
+        [
+            [
+                [1,1,1,0,0,0,0],
+                [1,1,1,1,1,1,0],
+                [0,0,0,0,0,0,0],
+                [1,1,1,0,0,0,0],
+                [1,1,1,1,1,1,1]
+            ],
+            4,
+            [2,0,3,1]
+        ]
     ]
     # fmt: on
 
