@@ -10,16 +10,18 @@ Constraints:
     1 <= left <= right <= n
 """
 
+from __future__ import annotations
+
 
 class ListNode:
     """Definition for singly-linked list."""
 
-    def __init__(self, val=0, next=None):
+    def __init__(self, val: int = 0, next: ListNode | None = None):
         self.val = val
         self.next = next
 
 
-def array_to_linked_list(arr):
+def array_to_linked_list(arr: list[int]) -> ListNode | None:
     """Array to LinkedList"""
     head = None
     for i in range(len(arr) - 1, -1, -1):
@@ -28,7 +30,7 @@ def array_to_linked_list(arr):
     return head
 
 
-def linked_list_to_array(head):
+def linked_list_to_array(head: ListNode) -> list[int]:
     """LinkedList to Array"""
     arr = []
     node = head
@@ -40,8 +42,20 @@ def linked_list_to_array(head):
 
 
 class Solution:
-    def reverseBetween(self, head, left, right):
-        pass
+    def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+        before = ListNode(-1, head)
+        previous_node = before
+        for i in range(1, left):
+            previous_node = previous_node.next
+
+        first_node = previous_node.next
+        for i in range(left, right):
+            next_node = first_node.next
+            first_node.next = next_node.next
+            next_node.next = previous_node.next
+            previous_node.next = next_node
+
+        return before.next
 
 
 def test_solution():
