@@ -10,13 +10,14 @@ Constraints:
     1 <= left <= right <= n
 """
 
-from __future__ import annotations
+# from __future__ import annotations
+from typing import Self
 
 
 class ListNode:
     """Definition for singly-linked list."""
 
-    def __init__(self, val: int = 0, next: ListNode | None = None):
+    def __init__(self, val: int = 0, next: Self | None = None):
         self.val = val
         self.next = next
 
