@@ -18,7 +18,36 @@ class Solution:
     def findMedianSortedArrays_merge_sort(
         self, nums1: list[int], nums2: list[int]
     ) -> float:
-        return 0.0
+        n1 = len(nums1)
+        n2 = len(nums2)
+        n = n1 + n2
+        mid = n // 2
+
+        previous, current = 0, 0
+        idx1, idx2 = 0, 0
+        for i in range(mid + 1):
+            previous = current
+
+            if idx1 == n1:
+                current = nums2[idx2]
+                idx2 += 1
+                continue
+
+            if idx2 == n2:
+                current = nums1[idx1]
+                idx1 += 1
+                continue
+
+            if nums1[idx1] <= nums2[idx2]:
+                current = nums1[idx1]
+                idx1 += 1
+            else:
+                current = nums2[idx2]
+                idx2 += 1
+
+        if n % 2:
+            return current
+        return (previous + current) / 2
 
     def findMedianSortedArrays_bin_search(
         self, nums1: list[int], nums2: list[int]
@@ -72,7 +101,43 @@ class Solution:
         esquerda, o ponteiro da direita (hi = mid). Este processo é repetido até que a
         faixa de uma das sequências seja completamente consumida (lo >= hi).
         """
-        return 0.0
+
+        def bin_search(target, lo1, hi1, lo2, hi2):
+            if lo1 >= hi1:
+                return nums2[target - lo1]
+
+            if lo2 >= hi2:
+                return nums1[target - lo2]
+
+            mid1 = lo1 + (hi1 - lo1) // 2
+            mid2 = lo2 + (hi2 - lo2) // 2
+            mid = mid1 + mid2
+
+            num1 = nums1[mid1]
+            num2 = nums2[mid2]
+
+            if target > mid:
+                if num1 < num2:
+                    return bin_search(target, mid1 + 1, hi1, lo2, hi2)
+                else:
+                    return bin_search(target, lo1, hi1, mid2 + 1, hi2)
+            else:
+                if num1 > num2:
+                    return bin_search(target, lo1, mid1, lo2, hi2)
+                else:
+                    return bin_search(target, lo1, hi1, lo2, mid2)
+
+        n1 = len(nums1)
+        n2 = len(nums2)
+        n = n1 + n2
+        mid = n // 2
+
+        if n % 2:
+            return bin_search(mid, 0, n1, 0, n2)
+        else:
+            return (
+                bin_search(mid - 1, 0, n1, 0, n2) + bin_search(mid, 0, n1, 0, n2)
+            ) / 2
 
     def findMedianSortedArrays_partitions(
         self, nums1: list[int], nums2: list[int]
@@ -100,6 +165,37 @@ class Solution:
         contrário, devemos fazer uma média entre os valores das partiçãoes à esquerda
         e da direita.
         """
+        n1 = len(nums1)
+        n2 = len(nums2)
+
+        if n1 > n2:
+            return self.findMedianSortedArrays_partitions(nums2, nums1)
+
+        n = n1 + n2
+        mid = (n + 1) // 2
+
+        left, right = 0, n1
+        while left <= right:
+            part1 = left + (right - left) // 2
+            part2 = mid - part1
+
+            max_left1 = -1_000_001 if part1 == 0 else nums1[part1 - 1]
+            min_right1 = 1_000_001 if part1 == n1 else nums1[part1]
+            max_left2 = -1_000_001 if part2 == 0 else nums2[part2 - 1]
+            min_right2 = 1_000_001 if part2 == n2 else nums2[part2]
+
+            if max_left1 <= min_right2 and max_left2 <= min_right1:
+                if n % 2:
+                    return max(max_left1, max_left2)
+                else:
+                    return (max(max_left1, max_left2) + min(min_right1, min_right2)) / 2
+
+            if max_left1 > min_right2:
+                right = part1 - 1
+            else:
+                # min_left1 < max_left2
+                left = part1 + 1
+
         return 0.0
 
 
@@ -107,8 +203,8 @@ def test_solution():
     """test"""
 
     funcs = [
-        Solution().findMedianSortedArrays_merge_sort,
-        Solution().findMedianSortedArrays_bin_search,
+        # Solution().findMedianSortedArrays_merge_sort,
+        # Solution().findMedianSortedArrays_bin_search,
         Solution().findMedianSortedArrays_partitions,
     ]
 
